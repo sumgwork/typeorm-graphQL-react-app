@@ -8,6 +8,7 @@ import {
   Query,
   Resolver,
   UseMiddleware,
+  Int,
 } from "type-graphql";
 import {
   createAccessToken,
@@ -17,6 +18,7 @@ import {
 import { User } from "./entity/User";
 import { isAuth } from "./middlewares/isAuthMiddleware";
 import { MyContext } from "./MyContext";
+import { getConnection } from "typeorm";
 
 @ObjectType()
 class LoginResponse {
@@ -55,6 +57,16 @@ export class UserResolver {
       console.log(error);
       return false;
     }
+  }
+
+  /**
+   * Increment token version by 1
+   */
+  @Mutation(() => Boolean)
+  async revokeRefreshTokensForUser(@Arg("userId", () => Int) userId: number) {
+    await getConnection()
+      .getRepository(User)
+      .increment({ id: userId }, "tokenVersion", 1);
   }
 
   @Mutation(() => LoginResponse)
