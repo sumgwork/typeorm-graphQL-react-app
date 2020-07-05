@@ -1,5 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
-import { ObjectType, Field, Int } from "type-graphql";
+import { Field, Int, ObjectType } from "type-graphql";
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @ObjectType()
 @Entity("users")
@@ -8,6 +8,7 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  // String is default graphql type
   @Field()
   @Column("text")
   email: string;

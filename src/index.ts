@@ -1,9 +1,9 @@
 import { ApolloServer } from "apollo-server-express";
-import { createConnection } from "typeorm";
-// import { User } from "./entity/User";
+import "dotenv/config";
 import express from "express";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
+import { createConnection } from "typeorm";
 import { UserResolver } from "./UserResolver";
 
 (async () => {
