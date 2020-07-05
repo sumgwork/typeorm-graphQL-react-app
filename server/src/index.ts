@@ -1,5 +1,6 @@
 import { ApolloServer } from "apollo-server-express";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import "dotenv/config";
 import express from "express";
 import { verify } from "jsonwebtoken";
@@ -12,11 +13,17 @@ import {
   sendRefreshToken,
 } from "./auth";
 import { User } from "./entity/User";
-import { UserResolver } from "./UserResolver";
+import { UserResolver } from "./resolvers/UserResolver";
 
 (async () => {
   const app = express();
   app.use(cookieParser());
+  app.use(
+    cors({
+      origin: "http://localhost:3000",
+      credentials: true,
+    })
+  );
   app.get("/", (_req, res) => {
     res.send("Hello");
   });
@@ -59,7 +66,8 @@ import { UserResolver } from "./UserResolver";
     context: ({ req, res }) => ({ req, res }),
   });
 
-  apolloServer.applyMiddleware({ app, path: "/graphql" });
+  apolloServer.applyMiddleware({ app, path: "/graphql", cors: false });
+  // cors is handled on top with cors package
 
   app.listen(4000, () => {
     console.log("Express server started!");

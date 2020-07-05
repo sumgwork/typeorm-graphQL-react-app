@@ -3,22 +3,22 @@ import {
   Arg,
   Ctx,
   Field,
+  Int,
   Mutation,
   ObjectType,
   Query,
   Resolver,
   UseMiddleware,
-  Int,
 } from "type-graphql";
+import { getConnection } from "typeorm";
 import {
   createAccessToken,
   createRefreshToken,
   sendRefreshToken,
-} from "./auth";
-import { User } from "./entity/User";
-import { isAuth } from "./middlewares/isAuthMiddleware";
-import { MyContext } from "./MyContext";
-import { getConnection } from "typeorm";
+} from "../auth";
+import { User } from "../entity/User";
+import { isAuth } from "../middlewares/isAuthMiddleware";
+import { MyContext } from "../MyContext";
 
 @ObjectType()
 class LoginResponse {
