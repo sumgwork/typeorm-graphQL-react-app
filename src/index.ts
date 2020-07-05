@@ -6,9 +6,13 @@ import { verify } from "jsonwebtoken";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
-import { UserResolver } from "./UserResolver";
+import {
+  createAccessToken,
+  createRefreshToken,
+  sendRefreshToken,
+} from "./auth";
 import { User } from "./entity/User";
-import { createAccessToken } from "./auth";
+import { UserResolver } from "./UserResolver";
 
 (async () => {
   const app = express();
@@ -35,6 +39,8 @@ import { createAccessToken } from "./auth";
     if (!user) {
       return res.send({ ok: false, accessToken: "" });
     }
+
+    sendRefreshToken(res, createRefreshToken(user));
 
     return res.send({ ok: true, accessToken: createAccessToken(user) });
   });

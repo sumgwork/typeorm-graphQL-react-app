@@ -9,7 +9,11 @@ import {
   Resolver,
   UseMiddleware,
 } from "type-graphql";
-import { createAccessToken, createRefreshToken } from "./auth";
+import {
+  createAccessToken,
+  createRefreshToken,
+  sendRefreshToken,
+} from "./auth";
 import { User } from "./entity/User";
 import { isAuth } from "./middlewares/isAuthMiddleware";
 import { MyContext } from "./MyContext";
@@ -73,6 +77,7 @@ export class UserResolver {
     }
 
     // login successful
+    sendRefreshToken(res, createRefreshToken(user));
     res.cookie("jid", createRefreshToken(user), {
       httpOnly: true,
     });
