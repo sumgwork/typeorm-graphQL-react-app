@@ -29,6 +29,11 @@ class LoginResponse {
 @Resolver()
 export class UserResolver {
   @Query(() => String)
+  hello() {
+    return "hi";
+  }
+
+  @Query(() => String)
   @UseMiddleware(isAuth)
   protected(@Ctx() { payload }: MyContext) {
     return `I am protected route. User id is ${payload!.userId}`;
