@@ -11,7 +11,7 @@ import {
 } from "type-graphql";
 import { createAccessToken, createRefreshToken } from "./auth";
 import { User } from "./entity/User";
-import { isAuth } from "./isAuthMiddleware";
+import { isAuth } from "./middlewares/isAuthMiddleware";
 import { MyContext } from "./MyContext";
 
 @ObjectType()
