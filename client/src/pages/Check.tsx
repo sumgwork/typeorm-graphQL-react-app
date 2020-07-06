@@ -4,7 +4,9 @@ import { useCheckProtectedRouteQuery } from "../generated/graphql";
 interface CheckProps {}
 
 export const Check: React.FC<CheckProps> = ({}) => {
-  const { data, loading, error } = useCheckProtectedRouteQuery();
+  const { data, loading, error } = useCheckProtectedRouteQuery({
+    fetchPolicy: "network-only",
+  });
   if (error) {
     console.log("error", error);
     return <div>Error occured</div>;

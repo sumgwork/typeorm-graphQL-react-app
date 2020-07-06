@@ -19,11 +19,14 @@ import {
 import { User } from "../entity/User";
 import { isAuth } from "../middlewares/isAuthMiddleware";
 import { MyContext } from "../MyContext";
+import { verify } from "jsonwebtoken";
 
 @ObjectType()
 class LoginResponse {
   @Field()
   accessToken: string;
+  @Field(() => User)
+  user: User;
 }
 
 @Resolver()
@@ -44,6 +47,27 @@ export class UserResolver {
     return User.find();
   }
 
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() context: MyContext) {
+    const authorization = context.req.headers["authorization"];
+    if (!authorization) {
+      throw new Error("not authenticated");
+    }
+    try {
+      const token = authorization?.split(" ")[1];
+      if (!token) {
+        throw new Error("not authenticated");
+      }
+      const payload: any = verify(token, process.env.ACCESS_TOKEN_SECRET!);
+      context.payload = payload;
+      return await User.findOne(payload.userId);
+    } catch (error) {
+      console.log(error);
+      throw new Error("not authenticated");
+    }
+    return null;
+  }
+
   @Mutation(() => Boolean)
   async register(
     @Arg("email") email: string,
@@ -62,6 +86,12 @@ export class UserResolver {
       console.log(error);
       return false;
     }
+  }
+
+  @Mutation(() => Boolean)
+  async logout(@Ctx() { res }: MyContext) {
+    sendRefreshToken(res, "");
+    return true;
   }
 
   /**
@@ -101,6 +131,7 @@ export class UserResolver {
 
     return {
       accessToken: createAccessToken(user),
+      user,
     };
   }
 }
